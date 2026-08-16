@@ -1,0 +1,50 @@
+header
+{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/headerBanner.jpg);
+    background-size: cover;
+    height: 300px;
+    width: 100%;
+}
+
+header h1 {
+    text-shadow: -2px -2px 5px rgba(0, 0, 0, 0.8);
+}
+
+.ingredients ul {
+    list-style-type: '🌿 ';
+    list-style-position: inside;
+    padding-left: 10px;
+}
+
+.instructions ol li::marker {
+color: rgb(74, 196, 18);
+
+}
+
+main a {
+    text-decoration: none;
+}
+
+label:has(+ div input:required)::after, label:has(+ div textarea:required)::after {
+    content: " *";
+    color: #dc3545; /* Bootstrap's $danger color */
+}
+
+@media screen and (min-width: 768px) {
+    
+    .card .img-fluid {
+        height: 100%;
+        object-fit: cover;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #3fa877 !important; 
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    header h1 {
+        text-wrap: nowrap;
+    }
+
+}
