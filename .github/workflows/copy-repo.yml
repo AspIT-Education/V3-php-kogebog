@@ -7,6 +7,13 @@ on:
         description: "Dit navn, studienummer eller initialer (f.eks. hanne-m)"
         required: true
         type: string
+      teacher_username:
+        description: 'Vælg din lærer'
+        required: true
+        type: choice
+        options:
+          - 'AspIT-Hanne'
+          - 'JOGR-AspIT'
 
 jobs:
   duplicate:
@@ -73,5 +80,20 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             /repos/${{ github.repository_owner }}/${{ steps.vars.outputs.target_name }}/collaborators/${{ github.actor }} \
             -f permission=push
+
+      - name: Add Selected Teacher as Collaborator
+        env:
+          GH_TOKEN: ${{ secrets.ORG_REPOSITORIES_TOKEN }}
+        run: |
+          SELECTED_TEACHER="${{ inputs.teacher_username }}"
+          
+          echo "Tilføjer $SELECTED_TEACHER som collaborator..."
+          
+          # Tilføjer den valgte lærer med "push" (skrive) rettigheder
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository_owner }}/${{ steps.vars.outputs.target_name }}/collaborators/$SELECTED_TEACHER" \
+            -f permission="push" || echo "Kunne ikke tilføje lærer automatisk - tjek brugernavn"
           
           echo "🚀 Færdig! Dit opgave-repository er klar her: https://github.com{{ github.repository_owner }}/${{ steps.vars.outputs.target_name }}"
