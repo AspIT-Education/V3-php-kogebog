@@ -1,0 +1,34 @@
+name: Sync and Update Issues
+
+on:
+  workflow_dispatch: # Gør det muligt at starte den manuelt via GitHub UI
+
+jobs:
+  manage-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.GH_PAT }}" | gh auth login --with-token
+
+      - name: Delete old issue #1 in Cosmo repo
+        run: |
+          echo "Sletter issue #1 i Cosmo-repoet..."
+          gh issue delete 1 --repo AspIT-Education/V3-php-kogebog-Cosmo --yes
+
+      - name: Copy issues 10, 11, 12, and 13
+        run: |
+          SOURCE_REPO="AspIT-Education/V3-php-kogebog"
+          TARGET_REPO="AspIT-Education/V3-php-kogebog-Cosmo"
+
+          for issue_num in 10 11 12 13; do
+            echo "Henter indhold for issue #$issue_num fra $SOURCE_REPO..."
+            
+            # Hent titel og body fra kilde-repoet
+            TITLE=$(gh issue view $issue_num --repo "$SOURCE_REPO" --json title --jq '.title')
+            BODY=$(gh issue view $issue_num --repo "$SOURCE_REPO" --json body --jq '.body')
+
+            echo "Opretter issue i $TARGET_REPO med titlen: '$TITLE'..."
+            
+            # Opret issue i elevens repo
+            gh issue create --repo "$TARGET_REPO" --title "$TITLE" --body "$BODY"
+          done
